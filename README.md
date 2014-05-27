@@ -15,6 +15,8 @@ You should simply require('geographiclib') and then use it like using js version
 
 http://geographiclib.sourceforge.net/html/other.html#javascript
 
+For library documentation refer [here](http://geographiclib.sourceforge.net/html/classGeographicLib_1_1Geodesic.html).
+
 Some examples below:
 
 ```javascript
@@ -35,7 +37,7 @@ console.log(geo.Inverse(source_lat, source_lon, destination_lat, destination_lon
  * }
  */
 
-console.log(geo.Inverse(source_lat, source_lon, azimuth, distance));
+console.log(geo.Direct(source_lat, source_lon, azimuth, distance));
 /**
  * outputs in (numbers are just example):
  * {
