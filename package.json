@@ -1,7 +1,7 @@
 {
   "name": "geographiclib",
   "description": "GeographicLib (http://geographiclib.sourceforge.net/) node.js port",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Yurij Mikhalevich",
     "email": "0@39.yt"
@@ -10,15 +10,15 @@
     "geometry",
     "geographiclib",
     "geography",
+    "geodesic problem",
     "direct geodesic problem",
     "inverse geodesic problem",
     "geodesic calculator",
-    "azimuth",
     "geodesic"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/cat-corporation/node-geographiclib"
+    "url": "git://github.com/39dotyt/node-geographiclib"
   },
   "main": "index",
   "readmeFilename": "README.md"

@@ -1,3 +1,7 @@
+/**
+ * @license GPLv3
+ * @author 0@39.yt (Yurij Mikhalevich)
+ */
 var lib = {};
 
 require('./lib/Math')(lib);
