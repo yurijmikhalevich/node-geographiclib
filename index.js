@@ -1,5 +1,5 @@
 /**
- * @license GPLv3
+ * @license GPL-3.0+
  * @author 0@39.yt (Yurij Mikhalevich)
  */
 var lib = {};
