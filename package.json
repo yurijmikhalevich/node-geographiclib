@@ -1,8 +1,8 @@
 {
   "name": "geographiclib",
   "description": "GeographicLib (http://geographiclib.sourceforge.net/) node.js port",
-  "license": "GPL-3.0+",
-  "version": "1.0.3",
+  "license": "MIT",
+  "version": "1.0.4",
   "author": {
     "name": "Yurij Mikhalevich",
     "email": "0@39.yt"
