@@ -910,7 +910,8 @@ g.WGS84=new g.Geodesic(c.WGS84.a,c.WGS84.f);
 })(GeographicLib.Geodesic,GeographicLib.GeodesicLine,
 GeographicLib.PolygonArea,GeographicLib.Math,GeographicLib.Constants);
 // GeographicLib/GeodesicLine.js
-(function(g,
+(function(
+g,
 l,m){
 "use strict";
 l.GeodesicLine=function(geod,lat1,lon1,azi1,caps){
