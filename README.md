@@ -1,55 +1,42 @@
-# node-geographiclib
+# Geodesic routines from GeographicLib
 
-This is GeographicLib (http://geographiclib.sourceforge.net/) node.js port.
+This library is a JavaScript implementation of the geodesic routines
+from [GeographicLib](http://geographiclib.sf.net).  This solves the
+direct and inverse geodesic problems for an ellipsoid of revolution.
 
-Installation:
+## Installation
 
-```javascript
-$ nmp install geogrpahiclib
+```bash
+$ npm install geographiclib
 ```
 
-Usage:
+## Usage
 
-You should simply require('geographiclib') and then use it like using js version of GeographicLib
-(http://geographiclib.sourceforge.net/scripts/geographiclib.js):
+In [node](https://nodejs.org), do
+```javascript
+var GeographicLib = require('geographiclib');
+```
 
-http://geographiclib.sourceforge.net/html/other.html#javascript
+## Documentation
 
-For library documentation refer [here](http://geographiclib.sourceforge.net/html/classGeographicLib_1_1Geodesic.html).
+Full documentation is provided
+[here](http://geographiclib.sourceforge.net/1.45/js/).
 
-Some examples below:
+## Examples:
 
 ```javascript
-var geo = require('geographiclib').Geodesic.WGS84; // requiring WGS84-standard geoid
+var GeographicLib = require('geographiclib'),
+    geod = GeographicLib.Geodesic.WGS84, r;
 
-console.log(geo.Inverse(source_lat, source_lon, destination_lat, destination_lon));
-/**
- * outputs in (numbers are just example):
- * {
- *   a12: 0.043512234,
- *   s12: 15432.779809263175,
- *   azi1: 10.450357251089693,
- *   azi2: 10.467249496997848,
- *   lat1: source_lat,
- *   lon1: source_lon,
- *   lat2: destination_lat,
- *   lon2: destination_lon
- * }
- */
+// Find the distance from Wellington, NZ (41.32S, 174.81E) to
+// Salamanca, Spain (40.96N, 5.50W)...
+r = geod.Inverse(-41.32, 174.81, 40.96, -5.50);
+console.log('The distance is ' + r.s12.toFixed(3) + ' m.');
+// This prints "The distance is 19959679.267 m."
 
-console.log(geo.Direct(source_lat, source_lon, azimuth, distance));
-/**
- * outputs in (numbers are just example):
- * {
- *   lon2: destination_lat,
- *   lat2: destination_lon,
- *   azi2: 10.467249496997848,
- *   a12: 0.045145534,
- *   lat1: source_lat,
- *   lon1: source_lon,
- *   azi1: azimuth,
- *   s12: distance
- * }
- */
-
+// Find the point 20000 km SW of Perth, Australia (32.06S, 115.74E)...
+r = geod.Direct(-32.06, 115.74, 225, 20000e3);
+console.log('The position is (' +
+            r.lat2.toFixed(8) + ',' + r.lon2.toFixed(8) + ').');
+// This prints "The position is (32.11195529,-63.95925278)."
 ```

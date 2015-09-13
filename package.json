@@ -1,26 +1,37 @@
 {
   "name": "geographiclib",
-  "description": "GeographicLib (http://geographiclib.sourceforge.net/) node.js port",
-  "license": "MIT",
-  "version": "1.0.4",
-  "author": {
-    "name": "Yurij Mikhalevich",
-    "email": "0@39.yt"
+  "version": "1.45.0-beta1",
+  "description":
+  "JavaScript implementation of geodesic routines in GeographicLib",
+  "main": "geographiclib.js",
+  "scripts": {
+    "test": "mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/39dotyt/node-geographiclib"
+  },
+  "url": "https://geographiclib.sf.net",
   "keywords": [
+    "geodesics",
     "geometry",
     "geographiclib",
     "geography",
     "geodesic problem",
     "direct geodesic problem",
     "inverse geodesic problem",
-    "geodesic calculator",
-    "geodesic"
+    "geodesic calculator"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/39dotyt/node-geographiclib"
+  "devDependencies": {
+    "mocha": "2.3.0"
   },
-  "main": "index",
-  "readmeFilename": "README.md"
+  "author": "Charles Karney <charles@karney.com>",
+  "contributors": [
+    "Yurij Mikhalevich <0@39.yt>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/39dotyt/node-geographiclib/issues",
+    "email": "charles@karney.com"
+  }
 }
