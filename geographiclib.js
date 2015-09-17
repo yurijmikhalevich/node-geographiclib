@@ -21,7 +21,7 @@
  *   Math.js Geodesic.js GeodesicLine.js PolygonArea.js DMS.js
  */
 
-/**************** GeographicLib/Math.js ****************/
+/**************** Math.js ****************/
 /*
  * Math.js
  * Transcription of Math.hpp, Constants.hpp, and Accumulator.hpp into
@@ -437,7 +437,7 @@ GeographicLib.Accumulator = {};
   };
 })(GeographicLib.Accumulator, GeographicLib.Math);
 
-/**************** GeographicLib/Geodesic.js ****************/
+/**************** Geodesic.js ****************/
 /*
  * Geodesic.js
  * Transcription of Geodesic.[ch]pp into JavaScript.
@@ -1701,7 +1701,7 @@ GeographicLib.PolygonArea = {};
 })(GeographicLib.Geodesic, GeographicLib.GeodesicLine,
    GeographicLib.PolygonArea, GeographicLib.Math, GeographicLib.Constants);
 
-/**************** GeographicLib/GeodesicLine.js ****************/
+/**************** GeodesicLine.js ****************/
 /*
  * GeodesicLine.js
  * Transcription of GeodesicLine.[ch]pp into JavaScript.
@@ -2069,7 +2069,7 @@ GeographicLib.PolygonArea = {};
 
 })(GeographicLib.Geodesic, GeographicLib.GeodesicLine, GeographicLib.Math);
 
-/**************** GeographicLib/PolygonArea.js ****************/
+/**************** PolygonArea.js ****************/
 /*
  * PolygonArea.js
  * Transcription of PolygonArea.[ch]pp into JavaScript.
@@ -2388,7 +2388,7 @@ GeographicLib.PolygonArea = {};
 })(GeographicLib.PolygonArea, GeographicLib.Geodesic,
    GeographicLib.Math, GeographicLib.Accumulator);
 
-/**************** GeographicLib/DMS.js ****************/
+/**************** DMS.js ****************/
 /*
  * DMS.js
  * Transcription of DMS.[ch]pp into JavaScript.
