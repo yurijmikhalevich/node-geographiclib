@@ -62,6 +62,9 @@
  *   {@link module:GeographicLib/Accumulator.Accumulator Accumulator} class)
  *   for summing the contributions to the area of a polygon.
  */
+
+(function(cb) {
+
 var GeographicLib = {};
 GeographicLib.Constants = {};
 GeographicLib.Math = {};
@@ -2867,5 +2870,17 @@ GeographicLib.DMS = {};
   };
 })(GeographicLib.DMS);
 
-/******** support loading with node's require ********/
-if (typeof module === 'object') module.exports = GeographicLib;
+cb(GeographicLib);
+
+})(function(geo) {
+  if (typeof module === 'object' && module.exports) {
+    /******** support loading with node's require ********/
+    module.exports = geo;
+  } else if (typeof define === 'function' && define.amd) {
+    /******** support loading with AMD ********/
+    define('geographiclib', [], function() { return geo; });
+  } else {
+    /******** otherwise just pollute our global namespace ********/
+    window.GeographicLib = geo;
+  }
+});
