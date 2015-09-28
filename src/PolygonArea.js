@@ -61,7 +61,7 @@
    * @property {number} f the flattening.
    * @property {bool} polyline whether the PolygonArea object describes a
    *   polyline or a polygon.
-   * @property {number} the number of vertices so far.
+   * @property {number} num the number of vertices so far.
    * @property {number} lat the current latitude (degrees).
    * @property {number} lon the current longitude (degrees).
    * @summary Initialize a PolygonArea object.
@@ -155,6 +155,7 @@
    * @returns {object} r where r.number is the number of vertices, r.perimeter
    *   is the perimeter (meters), and r.area (only returned if polyline is
    *   false) is the area (meters<sup>2</sup>).
+   * @description More points can be added to the polygon after this call.
    */
   p.PolygonArea.prototype.Compute = function(reverse, sign) {
     var vals = {number: this.num}, t, tempsum, crossings;
