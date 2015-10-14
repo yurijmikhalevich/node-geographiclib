@@ -27,7 +27,6 @@
    *   class.
    */
   p, g, m, a) {
-  "use strict";
 
   var transit, transitdirect;
   transit = function(lon1, lon2) {
@@ -287,7 +286,7 @@
     t = this._geod.Direct(this.lat, this.lon, azi, s, this._mask);
     tempsum += t.S12;
     crossings += transitdirect(this.lon, t.lon2);
-    t = this._geod(t.lat2, t.lon2, this._lat0, this._lon0, this._mask);
+    t = this._geod.Inverse(t.lat2, t.lon2, this._lat0, this._lon0, this._mask);
     vals.perimeter += t.s12;
     tempsum += t.S12;
     crossings += transit(t.lon2, this._lon0);
