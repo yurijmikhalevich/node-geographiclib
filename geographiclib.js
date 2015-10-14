@@ -1,6 +1,6 @@
 /*
  * Geodesic routines from GeographicLib translated to JavaScript.  See
- * http://geographiclib.sf.net/html/other.html#javascript
+ * http://geographiclib.sf.net/html/js/
  *
  * The algorithms are derived in
  *
@@ -16,7 +16,7 @@
  * under the MIT/X11 License.  For more information, see
  * http://geographiclib.sf.net/
  *
- * Version: 1.45
+ * Version: 1.46
  * File inventory:
  *   Math.js Geodesic.js GeodesicLine.js PolygonArea.js DMS.js
  */
@@ -64,6 +64,7 @@
  *   {@link module:GeographicLib/Accumulator.Accumulator Accumulator} class)
  *   for summing the contributions to the area of a polygon.
  */
+"use strict";
 var GeographicLib = {};
 GeographicLib.Constants = {};
 GeographicLib.Math = {};
@@ -75,7 +76,6 @@ GeographicLib.Accumulator = {};
    * @description Define constants defining the version and WGS84 parameters.
    */
   c) {
-  "use strict";
 
   /**
    * @constant
@@ -91,12 +91,12 @@ GeographicLib.Accumulator = {};
    * @property {number} minor the minor version number.
    * @property {number} patch the patch number.
    */
-  c.version = { major: 1, minor: 45, patch: 0 };
+  c.version = { major: 1, minor: 46, patch: 0 };
   /**
    * @constant
    * @summary version string
    */
-  c.version_string = "1.45";
+  c.version_string = "1.46";
 })(GeographicLib.Constants);
 
 (function(
@@ -106,7 +106,6 @@ GeographicLib.Accumulator = {};
    *   internal use).
    */
   m) {
-  "use strict";
 
   /**
    * @summary The number of digits of precision in floating-point numbers.
@@ -269,7 +268,7 @@ GeographicLib.Accumulator = {};
     var r = m.sum(m.AngNormalize(x), m.AngNormalize(-y)),
         d = - m.AngNormalize(r.s),
         t = r.t;
-    return (d == 180 && t < 0 ? -180 : d) - t;
+    return (d === 180 && t < 0 ? -180 : d) - t;
   };
 
   /**
@@ -338,7 +337,6 @@ GeographicLib.Accumulator = {};
    *   (mainly for internal use).
    */
   a, m) {
-  "use strict";
 
   /**
    * @class
@@ -472,7 +470,6 @@ GeographicLib.PolygonArea = {};
    *   {@link module:GeographicLib/Geodesic.Geodesic Geodesic} class.
    */
   g, l, p, m, c) {
-  "use strict";
 
   var GEOGRAPHICLIB_GEODESIC_ORDER = 6,
       nA1_ = GEOGRAPHICLIB_GEODESIC_ORDER,
@@ -491,7 +488,7 @@ GeographicLib.PolygonArea = {};
       CAP_ALL  = 0x1F,
       CAP_MASK = CAP_ALL,
       OUT_ALL  = 0x7F80,
-      Astroid,
+      astroid,
       A1m1f_coeff, C1f_coeff, C1pf_coeff,
       A2m1f_coeff, C2f_coeff,
       A3_coeff, C3_coeff, C4_coeff;
@@ -503,7 +500,7 @@ GeographicLib.PolygonArea = {};
   g.nC3_ = GEOGRAPHICLIB_GEODESIC_ORDER;
   g.nC4_ = GEOGRAPHICLIB_GEODESIC_ORDER;
   nC3x_ = (g.nC3_ * (g.nC3_ - 1)) / 2;
-  nC4x_ = (g.nC4_ * (g.nC4_ + 1)) / 2,
+  nC4x_ = (g.nC4_ * (g.nC4_ + 1)) / 2;
   g.CAP_C1   = 1<<0;
   g.CAP_C1p  = 1<<1;
   g.CAP_C2   = 1<<2;
@@ -545,7 +542,7 @@ GeographicLib.PolygonArea = {};
             cosx * (y0 - y1));            // cos(x) * (y0 - y1)
   };
 
-  Astroid = function(x, y) {
+  astroid = function(x, y) {
     // Solve k^4+2*k^3-(x^2+y^2-1)*k^2-2*y^2*k-y^2 = 0 for positive
     // root k.  This solution is adapted from Geocentric::Reverse.
     var k,
@@ -558,7 +555,7 @@ GeographicLib.PolygonArea = {};
       // equations for s and t by r^3 and r, resp.
       S = p * q / 4;            // S = r^3 * s
       r2 = m.sq(r);
-      r3 = r * r2
+      r3 = r * r2;
       // The discriminant of the quadratic equation for T3.  This is
       // zero on the evolute curve p^(1/3)+q^(1/3) = 1
       disc = S * (S + 2 * r3);
@@ -599,7 +596,7 @@ GeographicLib.PolygonArea = {};
 
   A1m1f_coeff = [
     // (1-eps)*A1-1, polynomial in eps2 of order 3
-      +1, 4, 64, 0, 256,
+      +1, 4, 64, 0, 256
   ];
 
   // The scale factor A1-1 = mean value of (d/dsigma)I1 - 1
@@ -621,7 +618,7 @@ GeographicLib.PolygonArea = {};
     // C1[5]/eps^5, polynomial in eps2 of order 0
       -7, 1280,
     // C1[6]/eps^6, polynomial in eps2 of order 0
-      -7, 2048,
+      -7, 2048
   ];
 
   // The coefficients C1[l] in the Fourier expansion of B1
@@ -650,7 +647,7 @@ GeographicLib.PolygonArea = {};
     // C1p[5]/eps^5, polynomial in eps2 of order 0
       +3467, 7680,
     // C1p[6]/eps^6, polynomial in eps2 of order 0
-      +38081, 61440,
+      +38081, 61440
   ];
 
   // The coefficients C1p[l] in the Fourier expansion of B1p
@@ -669,7 +666,7 @@ GeographicLib.PolygonArea = {};
 
   A2m1f_coeff = [
     // (eps+1)*A2-1, polynomial in eps2 of order 3
-      -11, -28, -192, 0, 256,
+      -11, -28, -192, 0, 256
   ];
 
   // The scale factor A2-1 = mean value of (d/dsigma)I2 - 1
@@ -691,7 +688,7 @@ GeographicLib.PolygonArea = {};
     // C2[5]/eps^5, polynomial in eps2 of order 0
       +63, 1280,
     // C2[6]/eps^6, polynomial in eps2 of order 0
-      +77, 2048,
+      +77, 2048
   ];
 
   // The coefficients C2[l] in the Fourier expansion of B2
@@ -782,7 +779,7 @@ GeographicLib.PolygonArea = {};
     // A3, coeff of eps^1, polynomial in n of order 1
       +1, -1, 2,
     // A3, coeff of eps^0, polynomial in n of order 0
-      +1, 1,
+      +1, 1
   ];
 
   // The scale factor A3 = mean value of (d/dsigma)I3
@@ -791,8 +788,8 @@ GeographicLib.PolygonArea = {};
         j, p;
     for (j = nA3_ - 1; j >= 0; --j) { // coeff of eps^j
       p = Math.min(nA3_ - j - 1, j);  // order of polynomial in n
-      this._A3x[k++] = m.polyval(p, A3_coeff, o, this._n)
-        / A3_coeff[o + p + 1];
+      this._A3x[k++] = m.polyval(p, A3_coeff, o, this._n) /
+        A3_coeff[o + p + 1];
       o += p + 2;
     }
   };
@@ -827,7 +824,7 @@ GeographicLib.PolygonArea = {};
     // C3[4], coeff of eps^4, polynomial in n of order 1
       -14, 7, 512,
     // C3[5], coeff of eps^5, polynomial in n of order 0
-      +21, 2560,
+      +21, 2560
   ];
 
   // The coefficients C3[l] in the Fourier expansion of B3
@@ -886,7 +883,7 @@ GeographicLib.PolygonArea = {};
     // C4[4], coeff of eps^4, polynomial in n of order 1
       -2560, 832, 405405,
     // C4[5], coeff of eps^5, polynomial in n of order 0
-      +128, 99099,
+      +128, 99099
   ];
 
   g.Geodesic.prototype.C4coeff = function() {
@@ -895,8 +892,8 @@ GeographicLib.PolygonArea = {};
     for (l = 0; l < g.nC4_; ++l) {        // l is index of C4[l]
       for (j = g.nC4_ - 1; j >= l; --j) { // coeff of eps^j
         p = g.nC4_ - j - 1;               // order of polynomial in n
-        this._C4x[k++] = m.polyval(p, C4_coeff, o, this._n)
-          / C4_coeff[o + p + 1];
+        this._C4x[k++] = m.polyval(p, C4_coeff, o, this._n) /
+          C4_coeff[o + p + 1];
         o += p + 2;
       }
     }
@@ -1122,7 +1119,7 @@ GeographicLib.PolygonArea = {};
         //    6    56      0
         //
         // Because omg12 is near pi, estimate work with omg12a = pi - omg12
-        k = Astroid(x, y);
+        k = astroid(x, y);
         omg12a = lamscale * ( this.f >= 0 ? -x * k/(1 + k) : -y * (1 + k)/k );
         somg12 = Math.sin(omg12a); comg12 = -Math.cos(omg12a);
         // Update spherical estimate of alp1 using omg12 instead of
@@ -1327,7 +1324,7 @@ GeographicLib.PolygonArea = {};
 
     // index zero elements of these arrays are unused
     C1a = new Array(g.nC1_ + 1);
-    C2a = new Array(g.nC2_ + 1)
+    C2a = new Array(g.nC2_ + 1);
     C3a = new Array(g.nC3_);
 
     meridian = lat1 === -90 || slam12 === 0;
@@ -1735,7 +1732,6 @@ GeographicLib.PolygonArea = {};
    *   class.
    */
   l, m) {
-  "use strict";
 
   /**
    * @class
@@ -2102,7 +2098,6 @@ GeographicLib.PolygonArea = {};
    *   class.
    */
   p, g, m, a) {
-  "use strict";
 
   var transit, transitdirect;
   transit = function(lon1, lon2) {
@@ -2350,7 +2345,7 @@ GeographicLib.PolygonArea = {};
    * @description A new vertex is *not* added to the polygon.
    */
   p.PolygonArea.prototype.TestEdge = function(azi, s, reverse, sign) {
-    var vals = {number: this.num ? this.num + 1 : 0}, t, tempsump, crossings;
+    var vals = {number: this.num ? this.num + 1 : 0}, t, tempsum, crossings;
     if (this.num === 0)
       return vals;
     vals.perimeter = this._perimetersum.Sum() + s;
@@ -2362,8 +2357,8 @@ GeographicLib.PolygonArea = {};
     t = this._geod.Direct(this.lat, this.lon, azi, s, this._mask);
     tempsum += t.S12;
     crossings += transitdirect(this.lon, t.lon2);
-    t = this._geod(t.lat2, t.lon2, this._lat0, this._lon0, this._mask);
-    perimeter += t.s12;
+    t = this._geod.Inverse(t.lat2, t.lon2, this._lat0, this._lon0, this._mask);
+    vals.perimeter += t.s12;
     tempsum += t.S12;
     crossings += transit(t.lon2, this._lon0);
 
@@ -2427,9 +2422,8 @@ GeographicLib.DMS = {};
    *     - SECOND.
    */
   d) {
-  "use strict";
 
-  var lookup, zerofill, InternalDecode, NumMatch,
+  var lookup, zerofill, internalDecode, numMatch,
       hemispheres_ = "SNWE",
       signs_ = "-+",
       digits_ = "0123456789",
@@ -2496,7 +2490,7 @@ GeographicLib.DMS = {};
       if (mi < 0) mi = end; else mi += pa;
       if (pi < 0) pi = end; else pi += pa;
       pb = Math.min(mi, pi);
-      vals = InternalDecode(dmsa.substr(p, pb - p));
+      vals = internalDecode(dmsa.substr(p, pb - p));
       v += vals.val; ind2 = vals.ind;
       if (ind1 == d.NONE)
         ind1 = ind2;
@@ -2509,7 +2503,7 @@ GeographicLib.DMS = {};
     return {val: v, ind: ind1};
   };
 
-  InternalDecode = function(dmsa) {
+  internalDecode = function(dmsa) {
     var vals = {}, errormsg = "",
         sign, beg, end, ind1, k,
         ipieces, fpieces, npiece,
@@ -2674,7 +2668,7 @@ GeographicLib.DMS = {};
           ( fpieces[1] ? (60*fpieces[0] + fpieces[1]) / 60 : fpieces[0] ) );
       return vals;
     } while (false);
-    vals.val = NumMatch(dmsa);
+    vals.val = numMatch(dmsa);
     if (vals.val === 0)
       throw new Error(errormsg);
     else
@@ -2682,7 +2676,7 @@ GeographicLib.DMS = {};
     return vals;
   };
 
-  NumMatch = function(s) {
+  numMatch = function(s) {
     var t, sign, p0, p1;
     if (s.length < 3)
       return 0;
