@@ -10,9 +10,9 @@
  *    Charles F. F. Karney,
  *    Algorithms for geodesics, J. Geodesy 87, 43-55 (2013);
  *    https://dx.doi.org/10.1007/s00190-012-0578-z
- *    Addenda: http://geographiclib.sf.net/geod-addenda.html
+ *    Addenda: http://geographiclib.sourceforge.net/geod-addenda.html
  *
- * Copyright (c) Charles Karney (2011-2014) <charles@karney.com> and licensed
+ * Copyright (c) Charles Karney (2011-2016) <charles@karney.com> and licensed
  * under the MIT/X11 License.  For more information, see
  * http://geographiclib.sourceforge.net/
  */
@@ -36,7 +36,7 @@
     // Compute lon12 the same way as Geodesic::Inverse.
     lon1 = m.AngNormalize(lon1);
     lon2 = m.AngNormalize(lon2);
-    lon12 = m.AngDiff(lon1, lon2);
+    lon12 = m.AngDiff(lon1, lon2).s;
     cross = lon1 < 0 && lon2 >= 0 && lon12 > 0 ? 1 :
       (lon2 < 0 && lon1 >= 0 && lon12 < 0 ? -1 : 0);
     return cross;
@@ -151,10 +151,14 @@
    *   counter-clockwise) traversal counts as a positive area.
    * @param {bool} sign if true then return a signed result for the area if the
    *   polygon is traversed in the "wrong" direction instead of returning the
+   *   area for the rest of the earth.
    * @returns {object} r where r.number is the number of vertices, r.perimeter
    *   is the perimeter (meters), and r.area (only returned if polyline is
    *   false) is the area (meters<sup>2</sup>).
-   * @description More points can be added to the polygon after this call.
+   * @description If the object is a polygon (and not a polygon), the perimeter
+   *   includes the length of a final edge connecting the current point to the
+   *   initial point.  If the object is a polyline, then area is nan.  More
+   *   points can be added to the polygon after this call.
    */
   p.PolygonArea.prototype.Compute = function(reverse, sign) {
     var vals = {number: this.num}, t, tempsum, crossings;
