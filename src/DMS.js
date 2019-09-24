@@ -5,9 +5,9 @@
  * See the documentation for the C++ class.  The conversion is a literal
  * conversion from C++.
  *
- * Copyright (c) Charles Karney (2011-2015) <charles@karney.com> and licensed
+ * Copyright (c) Charles Karney (2011-2019) <charles@karney.com> and licensed
  * under the MIT/X11 License.  For more information, see
- * http://geographiclib.sourceforge.net/
+ * https://geographiclib.sourceforge.io/
  */
 
 GeographicLib.DMS = {};
@@ -61,7 +61,7 @@ GeographicLib.DMS = {};
    * @description The interpretation of the string is given in the
    *   documentation of the corresponding function, Decode(string&, flag&)
    *   in the {@link
-   *   http://geographiclib.sourceforge.net/html/classGeographicLib_1_1DMS.html
+   *   https://geographiclib.sourceforge.io/html/classGeographicLib_1_1DMS.html
    *   C++ DMS class}
    * @param {string} dms the string.
    * @returns {object} r where r.val is the decoded value (degrees) and r.ind
@@ -72,18 +72,23 @@ GeographicLib.DMS = {};
     var dmsa = dms, end,
         v = 0, i = 0, mi, pi, vals,
         ind1 = d.NONE, ind2, p, pa, pb;
-    dmsa = dmsa.replace(/\u00b0/g, 'd')
-          .replace(/\u00ba/g, 'd')
-          .replace(/\u2070/g, 'd')
-          .replace(/\u02da/g, 'd')
-          .replace(/\u2032/g, '\'')
-          .replace(/\u00b4/g, '\'')
-          .replace(/\u2019/g, '\'')
-          .replace(/\u2033/g, '"')
-          .replace(/\u201d/g, '"')
-          .replace(/\u2212/g, '-')
-          .replace(/''/g, '"')
-          .trim();
+    dmsa = dmsa
+      .replace(/\u2212/g, '-')  // U+2212 minus sign
+      .replace(/\u00b0/g, 'd')  // U+00b0 degree symbol
+      .replace(/\u00ba/g, 'd')  // U+00ba alt symbol
+      .replace(/\u2070/g, 'd')  // U+2070 sup zero
+      .replace(/\u02da/g, 'd')  // U+02da ring above
+      .replace(/\u2032/g, '\'') // U+2032 prime
+      .replace(/\u00b4/g, '\'') // U+00b4 acute accent
+      .replace(/\u2019/g, '\'') // U+2019 right single quote
+      .replace(/\u2033/g, '"')  // U+2033 double prime
+      .replace(/\u201d/g, '"')  // U+201d right double quote
+      .replace(/\u00a0/g, '')   // U+00a0 non-breaking space
+      .replace(/\u202f/g, '')   // U+202f narrow space
+      .replace(/\u2007/g, '')   // U+2007 figure space
+      .replace(/''/g, '"')      // '' -> "
+      .trim();
+
     end = dmsa.length;
     // p is pointer to the next piece that needs decoding
     for (p = 0; p < end; p = pb, ++i) {
@@ -102,9 +107,9 @@ GeographicLib.DMS = {};
       pb = Math.min(mi, pi);
       vals = internalDecode(dmsa.substr(p, pb - p));
       v += vals.val; ind2 = vals.ind;
-      if (ind1 == d.NONE)
+      if (ind1 === d.NONE)
         ind1 = ind2;
-      else if (!(ind2 == d.NONE || ind1 == ind2))
+      else if (!(ind2 === d.NONE || ind1 === ind2))
         throw new Error("Incompatible hemisphere specifies in " +
                         dmsa.substr(0, pb));
     }
@@ -290,7 +295,7 @@ GeographicLib.DMS = {};
     var t, sign, p0, p1;
     if (s.length < 3)
       return 0;
-    t = s.toUpperCase().replace(/0+$/,"");
+    t = s.toUpperCase().replace(/0+$/, "");
     sign = t.charAt(0) === '-' ? -1 : 1;
     p0 = t.charAt(0) === '-' || t.charAt(0) === '+' ? 1 : 0;
     p1 = t.length - 1;
@@ -312,7 +317,7 @@ GeographicLib.DMS = {};
    * @param {string} stra the first string.
    * @param {string} strb the first string.
    * @param {bool} [longfirst = false] if true assume then longitude is given
-   *   first (in the absense of any hemisphere indicators).
+   *   first (in the absence of any hemisphere indicators).
    * @returns {object} r where r.lat is the decoded latitude and r.lon is the
    *   decoded longitude (both in degrees).
    * @throws an error if the strings are illegal.
@@ -356,7 +361,8 @@ GeographicLib.DMS = {};
     var vals = d.Decode(angstr),
         ang = vals.val, ind = vals.ind;
     if (ind !== d.NONE)
-      throw new Error("Arc angle " + angstr + " includes a hemisphere N/E/W/S");
+      throw new Error("Arc angle " + angstr +
+                      " includes a hemisphere N/E/W/S");
     return ang;
   };
 
@@ -424,7 +430,7 @@ GeographicLib.DMS = {};
     fdegree = (angle - idegree) * scale + 0.5;
     f = Math.floor(fdegree);
     // Implement the "round ties to even" rule
-    fdegree = (f == fdegree && (f & 1)) ? f - 1 : f;
+    fdegree = (f === fdegree && (f & 1) === 1) ? f - 1 : f;
     fdegree /= scale;
 
     fdegree = Math.floor((angle - idegree) * scale + 0.5) / scale;

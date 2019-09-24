@@ -9,12 +9,12 @@
  *
  *    Charles F. F. Karney,
  *    Algorithms for geodesics, J. Geodesy 87, 43-55 (2013);
- *    https://dx.doi.org/10.1007/s00190-012-0578-z
- *    Addenda: http://geographiclib.sourceforge.net/geod-addenda.html
+ *    https://doi.org/10.1007/s00190-012-0578-z
+ *    Addenda: https://geographiclib.sourceforge.io/geod-addenda.html
  *
- * Copyright (c) Charles Karney (2011-2016) <charles@karney.com> and licensed
+ * Copyright (c) Charles Karney (2011-2019) <charles@karney.com> and licensed
  * under the MIT/X11 License.  For more information, see
- * http://geographiclib.sourceforge.net/
+ * https://geographiclib.sourceforge.io/
  */
 
 // Load AFTER GeographicLib/Math.js, GeographicLib/Geodesic.js
@@ -202,10 +202,10 @@
       s = Math.sin(tau12);
       c = Math.cos(tau12);
       // tau2 = tau1 + tau12
-      B12 = - g.SinCosSeries(true,
-                             this._stau1 * c + this._ctau1 * s,
-                             this._ctau1 * c - this._stau1 * s,
-                             this._C1pa);
+      B12 = -g.SinCosSeries(true,
+                            this._stau1 * c + this._ctau1 * s,
+                            this._ctau1 * c - this._stau1 * s,
+                            this._C1pa);
       sig12 = tau12 - (B12 - this._B11);
       ssig12 = Math.sin(sig12); csig12 = Math.cos(sig12);
       if (Math.abs(this.f) > 0.01) {
@@ -215,7 +215,8 @@
         // GeodesicExact.
         //     erri = the error in the inverse solution (nm)
         //     errd = the error in the direct solution (series only) (nm)
-        //     errda = the error in the direct solution (series + 1 Newton) (nm)
+        //     errda = the error in the direct solution
+        //             (series + 1 Newton) (nm)
         //
         //       f     erri  errd errda
         //     -1/5    12e6 1.2e9  69e6
@@ -303,8 +304,10 @@
       if (outmask & g.GEODESICSCALE) {
         t = this._k2 * (ssig2 - this._ssig1) * (ssig2 + this._ssig1) /
           (this._dn1 + dn2);
-        vals.M12 = csig12 + (t * ssig2 - csig2 * J12) * this._ssig1 / this._dn1;
-        vals.M21 = csig12 - (t * this._ssig1 - this._csig1 * J12) * ssig2 / dn2;
+        vals.M12 = csig12 +
+          (t * ssig2 - csig2 * J12) * this._ssig1 / this._dn1;
+        vals.M21 = csig12 -
+          (t * this._ssig1 - this._csig1 * J12) * ssig2 / dn2;
       }
     }
 
@@ -377,7 +380,7 @@
    * @param {number} s13_a13 if arcmode is false, this is the distance from
    *   point 1 to point 3 (meters); otherwise it is the arc length from
    *   point 1 to point 3 (degrees); it can be negative.
-   **********************************************************************/
+   */
   l.GeodesicLine.prototype.GenSetDistance = function(arcmode, s13_a13) {
     if (arcmode)
       this.SetArc(s13_a13);
@@ -389,7 +392,7 @@
    * @summary Specify position of point 3 in terms distance.
    * @param {number} s13 the distance from point 1 to point 3 (meters); it
    *   can be negative.
-   **********************************************************************/
+   */
   l.GeodesicLine.prototype.SetDistance = function(s13) {
     var r;
     this.s13 = s13;
@@ -401,7 +404,7 @@
    * @summary Specify position of point 3 in terms of arc length.
    * @param {number} a13 the arc length from point 1 to point 3 (degrees);
    *   it can be negative.
-   **********************************************************************/
+   */
   l.GeodesicLine.prototype.SetArc = function(a13) {
     var r;
     this.a13 = a13;
