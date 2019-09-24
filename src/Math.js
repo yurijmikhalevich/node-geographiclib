@@ -3,9 +3,9 @@
  * Transcription of Math.hpp, Constants.hpp, and Accumulator.hpp into
  * JavaScript.
  *
- * Copyright (c) Charles Karney (2011-2016) <charles@karney.com> and licensed
+ * Copyright (c) Charles Karney (2011-2019) <charles@karney.com> and licensed
  * under the MIT/X11 License.  For more information, see
- * http://geographiclib.sourceforge.net/
+ * https://geographiclib.sourceforge.io/
  */
 
 /**
@@ -65,12 +65,12 @@ GeographicLib.Accumulator = {};
    * @property {number} minor the minor version number.
    * @property {number} patch the patch number.
    */
-  c.version = { major: 1, minor: 46, patch: 0 };
+  c.version = { major: 1, minor: 50, patch: 0 };
   /**
    * @constant
    * @summary version string
    */
-  c.version_string = "1.46";
+  c.version_string = "1.50";
 })(GeographicLib.Constants);
 
 (function(
@@ -110,7 +110,7 @@ GeographicLib.Accumulator = {};
    * @param {number} y the second side.
    * @returns {number} the hypotenuse.
    */
-  m.hypot = function(x, y) {
+  m.hypot = Math.hypot || function(x, y) {
     var a, b;
     x = Math.abs(x);
     y = Math.abs(y);
@@ -123,9 +123,9 @@ GeographicLib.Accumulator = {};
    * @param {number} x the argument.
    * @returns {number} the real cube root.
    */
-  m.cbrt = function(x) {
+  m.cbrt = Math.cbrt || function(x) {
     var y = Math.pow(Math.abs(x), 1/3);
-    return x < 0 ? -y : y;
+    return x > 0 ? y : (x < 0 ? -y : x);
   };
 
   /**
@@ -133,7 +133,7 @@ GeographicLib.Accumulator = {};
    * @param {number} x the argument.
    * @returns {number} log(1 + x).
    */
-  m.log1p = function(x) {
+  m.log1p = Math.log1p || function(x) {
     var y = 1 + x,
         z = y - 1;
     // Here's the explanation for this magic: y = 1 + z, exactly, and z
@@ -148,10 +148,10 @@ GeographicLib.Accumulator = {};
    * @param {number} x the argument.
    * @returns {number} tanh<sup>&minus;1</sup> x.
    */
-  m.atanh = function(x) {
+  m.atanh = Math.atanh || function(x) {
     var y = Math.abs(x);          // Enforce odd parity
     y = m.log1p(2 * y/(1 - y))/2;
-    return x < 0 ? -y : y;
+    return x > 0 ? y : (x < 0 ? -y : x);
   };
 
   /**
@@ -219,15 +219,28 @@ GeographicLib.Accumulator = {};
   };
 
   /**
+   * @summary The remainder function.
+   * @param {number} x the numerator of the division
+   * @param {number} y the denominator of the division
+   * @return {number} the remainder in the range [&minus;y/2, y/2].
+   * <p>
+   * The range of x is unrestricted; y must be positive.
+   */
+  m.remainder = function(x, y) {
+    x = x % y;
+    return x < -y/2 ? x + y : (x < y/2 ? x : x - y);
+  };
+
+  /**
    * @summary Normalize an angle.
    * @param {number} x the angle in degrees.
-   * @returns {number} the angle reduced to the range [&minus;180&deg;,
-   *   180&deg;).
+   * @returns {number} the angle reduced to the range (&minus;180&deg;,
+   *   180&deg;].
    */
   m.AngNormalize = function(x) {
-    // Place angle in [-180, 180).
-    x = x % 360;
-    return x < -180 ? x + 360 : (x < 180 ? x : x - 360);
+    // Place angle in (-180, 180].
+    x = m.remainder(x, 360);
+    return x == -180 ? 180 : x;
   };
 
   /**
@@ -254,10 +267,10 @@ GeographicLib.Accumulator = {};
    */
   m.AngDiff = function(x, y) {
     // Compute y - x and reduce to [-180,180] accurately.
-    var r = m.sum(m.AngNormalize(x), m.AngNormalize(-y)),
-        d = - m.AngNormalize(r.s),
+    var r = m.sum(m.AngNormalize(-x), m.AngNormalize(y)),
+        d = m.AngNormalize(r.s),
         t = r.t;
-    return m.sum(d === 180 && t < 0 ? -180 : d, -t);
+    return m.sum(d === 180 && t > 0 ? -180 : d, t);
   };
 
   /**
@@ -271,18 +284,19 @@ GeographicLib.Accumulator = {};
     // the argument to the range [-45, 45] before converting it to radians.
     var r, q, s, c, sinx, cosx;
     r = x % 360;
-    q = Math.floor(r / 90 + 0.5);
+    q = 0 + Math.round(r / 90); // If r is NaN this returns NaN
     r -= 90 * q;
     // now abs(r) <= 45
     r *= this.degree;
     // Possibly could call the gnu extension sincos
     s = Math.sin(r); c = Math.cos(r);
     switch (q & 3) {
-    case  0: sinx =     s; cosx =     c; break;
-    case  1: sinx =     c; cosx = 0 - s; break;
-    case  2: sinx = 0 - s; cosx = 0 - c; break;
-    default: sinx = 0 - c; cosx =     s; break; // case 3
+      case 0:  sinx =  s; cosx =  c; break;
+      case 1:  sinx =  c; cosx = -s; break;
+      case 2:  sinx = -s; cosx = -c; break;
+      default: sinx = -c; cosx =  s; break; // case 3
     }
+    if (x !== 0) { sinx += 0; cosx += 0; }
     return {s: sinx, c: cosx};
   };
 
@@ -290,8 +304,8 @@ GeographicLib.Accumulator = {};
    * @summary Evaluate the atan2 function with the result in degrees
    * @param {number} y
    * @param {number} x
-   * @returns atan2(y, x) in degrees, in the range [&minus;180&deg;
-   *   180&deg;).
+   * @returns atan2(y, x) in degrees, in the range (&minus;180&deg;
+   *   180&deg;].
    */
   m.atan2d = function(y, x) {
     // In order to minimize round-off errors, this function rearranges the
@@ -310,9 +324,9 @@ GeographicLib.Accumulator = {};
       //   case 0: ang = 0 + ang; break;
       //
       // and handle mpfr as in AngRound.
-    case 1: ang = (y > 0 ? 180 : -180) - ang; break;
-    case 2: ang =  90 - ang; break;
-    case 3: ang = -90 + ang; break;
+      case 1: ang = (y >= 0 ? 180 : -180) - ang; break;
+      case 2: ang =  90 - ang; break;
+      case 3: ang = -90 + ang; break;
     }
     return ang;
   };
@@ -423,5 +437,15 @@ GeographicLib.Accumulator = {};
   a.Accumulator.prototype.Negate = function() {
     this._s *= -1;
     this._t *= -1;
+  };
+
+  /**
+   * @summary Take the remainder
+   * @param {number} y the divisor of the remainder operation.
+   * @return sum in range [&minus;y/2, y/2].
+   */
+  a.Accumulator.prototype.Remainder = function(y) {
+    this._s = m.remainder(this._s, y);
+    this.Add(0);
   };
 })(GeographicLib.Accumulator, GeographicLib.Math);
